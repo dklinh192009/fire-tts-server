@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hệ Thống Báo Cháy - TTS</title>
+  <style>
+    body { font-family: Arial; margin: 20px; background: #f0f0f0; }
+    .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    input, button { padding: 10px; margin: 10px 0; width: 100%; font-size: 16px; }
+    button { background: #d32f2f; color: white; border: none; cursor: pointer; }
+    button:hover { background: #b71c1c; }
+    .success { color: green; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔥 HỆ THỐNG BÁO CHÁY TTS</h1>
+    
+    <label><b>Device ID (tên ESP32):</b></label>
+    <input type="text" id="deviceID" value="ESP32_FIRE_001" placeholder="Ví dụ: ESP32_FIRE_001">
+
+    <label><b>Vị trí đặt ESP32:</b></label>
+    <input type="text" id="location" placeholder="Ví dụ: Tầng 2 - Phòng 205">
+
+    <button onclick="sendLocation()">🚨 GỬI VỊ TRÍ & KÍCH HOẠT BÁO CHÁY</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    async function sendLocation() {
+      const deviceID = document.getElementById('deviceID').value;
+      const location = document.getElementById('location').value;
+      const resultDiv = document.getElementById('result');
+
+      if (!location) {
+        resultDiv.innerHTML = '<p style="color:red">Vui lòng nhập vị trí!</p>';
+        return;
+      }
+
+      const response = await fetch('http://localhost:3000/updateLocation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deviceID, location })
+      });
+
+      const data = await response.json();
+      resultDiv.innerHTML = `<p class="success">✅ Đã gửi vị trí thành công: <b>${location}</b></p>`;
+    }
+  </script>
+</body>
+</html>
